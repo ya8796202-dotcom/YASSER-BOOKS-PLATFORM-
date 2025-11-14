@@ -3,358 +3,355 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>منصة القراءة</title>
-
-  <!-- خطوط -->
+  <title>منصة القراءة - إدارة الكتب</title>
   <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet">
-
   <style>
     :root{
-      --bg: #f9f9f9;
-      --card-bg: #ffffff;
-      --text: #222;
-      --muted: #6b6b6b;
-      --accent: #2b7cff;
-      --reader-font-size: 18px;
-      --radius: 10px;
-      --shadow: 0 6px 18px rgba(0,0,0,0.06);
+      --bg:#f9f9f9; --card:#fff; --text:#222; --muted:#6b6b6b; --accent:#2b7cff;
+      --radius:10px; --shadow:0 6px 18px rgba(0,0,0,0.06); --reader-font-size:18px;
     }
+    [data-theme="dark"]{ --bg:#0f1113; --card:#161718; --text:#eaeaea; --muted:#bdbdbd; --accent:#4da3ff; --shadow:0 6px 18px rgba(0,0,0,0.45); }
 
-    /* ثيم داكن */
-    [data-theme="dark"]{
-      --bg: #0f1113;
-      --card-bg: #161718;
-      --text: #eaeaea;
-      --muted: #bdbdbd;
-      --accent: #4da3ff;
-      --shadow: 0 6px 18px rgba(0,0,0,0.45);
-    }
-
-    /* عام */
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: 'Roboto', sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      transition: background-color .25s ease, color .25s ease;
-      line-height:1.5;
-    }
+    body{margin:0;font-family:'Roboto',sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+    header{background:var(--card);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(0,0,0,0.04);position:sticky;top:0;z-index:10}
+    header h1{margin:0;font-family:'Montserrat',sans-serif;color:var(--accent);font-size:20px;display:flex;align-items:center;gap:8px}
+    nav{display:flex;align-items:center;gap:10px}
+    .btn{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;padding:8px 12px;border-radius:8px;background:var(--accent);color:#fff;font-weight:600}
+    .btn.ghost{background:transparent;color:var(--text);border:1px solid rgba(0,0,0,0.06)}
+    .hero{text-align:center;padding:36px 18px}
+    .hero h2{margin:0 0 12px 0;font-family:'Merriweather',serif;font-size:26px}
+    .controls{max-width:1200px;margin:0 auto;padding:12px 18px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .search{flex:1;min-width:180px;display:flex;gap:8px;align-items:center}
+    .search input{flex:1;padding:8px 10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06)}
+    .cards{padding:18px;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));max-width:1200px;margin:0 auto}
+    .card{background:var(--card);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;transition:transform .15s;position:relative}
+    .card:hover{transform:translateY(-6px)}
+    .card img{width:100%;height:150px;object-fit:cover;display:block}
+    .card .body{padding:12px}
+    .card h3{margin:0 0 6px 0;font-family:'Merriweather',serif;font-size:16px}
+    .card p{margin:0;color:var(--muted);font-size:14px}
+    .card .actions{display:flex;gap:8px;margin-top:10px}
+    .icon-btn{background:transparent;border:1px solid rgba(0,0,0,0.06);padding:6px 8px;border-radius:8px;cursor:pointer}
+    .badge{position:absolute;left:10px;top:10px;background:rgba(0,0,0,0.6);color:#fff;padding:6px 8px;border-radius:8px;font-size:13px}
 
-    header{
-      background:var(--card-bg);
-      padding:14px 20px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      border-bottom:1px solid rgba(0,0,0,0.04);
-      position:sticky;
-      top:0;
-      z-index:10;
-    }
+    /* Modal form */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:50;padding:20px}
+    .modal.open{display:flex}
+    .modal-card{width:100%;max-width:720px;background:var(--card);border-radius:12px;padding:18px;box-shadow:var(--shadow);overflow:auto;max-height:90vh}
+    .form-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+    .form-row input[type="text"], .form-row input[type="url"], .form-row textarea, .form-row select{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06)}
+    textarea{min-height:100px;resize:vertical}
+    .form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
 
-    header h1{
-      margin:0;
-      font-family:'Montserrat', sans-serif;
-      color:var(--accent);
-      font-size:20px;
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
+    footer{text-align:center;padding:18px 12px;color:var(--muted);margin-top:30px}
 
-    nav{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-
-    nav a{
-      text-decoration:none;
-      color:var(--text);
-      font-weight:600;
-      padding:6px 8px;
-      border-radius:6px;
-    }
-    nav a:hover{background:rgba(0,0,0,0.03)}
-
-    /* أزرار عامة */
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      border:0;
-      cursor:pointer;
-      padding:8px 12px;
-      border-radius:8px;
-      background:var(--accent);
-      color:#fff;
-      font-weight:600;
-      transition: transform .12s ease, opacity .12s;
-    }
-    .btn:active{transform:translateY(1px)}
-    .btn.ghost{
-      background:transparent;
-      color:var(--text);
-      border:1px solid rgba(0,0,0,0.06);
-    }
-
-    /* بطل البداية */
-    .hero{
-      text-align:center;
-      padding:48px 20px;
-    }
-    .hero h2{
-      margin:0 0 18px 0;
-      font-family:'Merriweather', serif;
-      font-size:28px;
-      color:var(--text);
-    }
-    .hero .cta{font-size:16px}
-
-    /* شبكة البطاقات */
-    .cards{
-      padding:20px;
-      display:grid;
-      gap:18px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      max-width:1200px;
-      margin:0 auto;
-    }
-    .card{
-      background:var(--card-bg);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      overflow:hidden;
-      transition: transform .18s ease, box-shadow .18s ease;
-      cursor:pointer;
-    }
-    .card:hover{ transform:translateY(-6px) }
-    .card img{ width:100%; height:150px; object-fit:cover; display:block }
-    .card h3{ margin:12px; font-family:'Merriweather', serif; font-size:16px }
-
-    /* صفحة القارئ */
-    .reader{
-      max-width:900px;
-      margin:28px auto;
-      background:var(--card-bg);
-      padding:22px;
-      border-radius:12px;
-      box-shadow:var(--shadow);
-      font-family:'Merriweather', serif;
-      font-size:var(--reader-font-size);
-      line-height:1.85;
-      transition: background .2s, color .2s;
-    }
-
-    .reader .reader-controls{
-      display:flex;
-      gap:8px;
-      justify-content:flex-end;
-      margin-bottom:12px;
-      flex-wrap:wrap;
-    }
-
-    .reader .reader-controls button{
-      padding:8px 10px;
-      border-radius:8px;
-      border:1px solid rgba(0,0,0,0.06);
-      background:transparent;
-      color:var(--text);
-      cursor:pointer;
-      font-weight:600;
-    }
-
-    .reader .meta{ color:var(--muted); font-size:14px; margin-bottom:10px }
-
-    footer{
-      text-align:center;
-      padding:18px 12px;
-      color:var(--muted);
-      margin-top:30px;
-    }
-
-    /* استجابة */
-    @media (max-width:700px){
-      header{ padding:10px 12px }
-      .hero h2{ font-size:22px }
-      .card img{ height:140px }
-      .reader{ padding:16px }
-    }
+    @media (max-width:700px){ .hero h2{font-size:20px} .card img{height:140px} }
   </style>
 </head>
 <body>
 
   <header>
     <h1>📚 منصتي للقراءة</h1>
-
     <nav>
-      <a href="#">الرئيسية</a>
-      <a href="#">التصنيفات</a>
-      <a href="#">حسابي</a>
-
-      <div style="width:8px"></div>
-
+      <a class="btn ghost" id="openAdd">إضافة كتاب</a>
       <button id="themeToggle" class="btn ghost" aria-label="تبديل الوضع">🌙</button>
     </nav>
   </header>
 
-  <main>
-    <section class="hero">
-      <h2>اكتشف عالم الكتب والمقالات</h2>
-      <button id="startReading" class="btn cta">ابدأ القراءة</button>
-    </section>
+  <section class="hero">
+    <h2>مكتبتك الرقمية</h2>
+    <p style="color:var(--muted);margin-top:8px">أضف كتبك بسرعة، عدّلها، واحفظها محلياً.</p>
+  </section>
 
-    <section class="cards" aria-label="قائمة الكتب">
-      <article class="card" tabindex="0">
-        <img src="https://via.placeholder.com/400x250?text=Cover+1" alt="غلاف كتاب 1">
-        <h3>عنوان الكتاب الأول</h3>
-      </article>
+  <div class="controls" role="region" aria-label="أدوات المكتبة">
+    <div class="search">
+      <input id="searchInput" placeholder="ابحث عن عنوان أو مؤلف..." aria-label="بحث الكتب">
+      <button id="clearSearch" class="btn ghost">مسح</button>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span style="color:var(--muted);font-size:14px">عدد الكتب: <strong id="count">0</strong></span>
+    </div>
+  </div>
 
-      <article class="card" tabindex="0">
-        <img src="https://via.placeholder.com/400x250?text=Cover+2" alt="غلاف كتاب 2">
-        <h3>عنوان الكتاب الثاني</h3>
-      </article>
+  <section class="cards" id="cardsContainer" aria-live="polite" aria-label="قائمة الكتب">
+    <!-- البطاقات تُملأ ديناميكياً -->
+  </section>
 
-      <article class="card" tabindex="0">
-        <img src="https://via.placeholder.com/400x250?text=Cover+3" alt="غلاف كتاب 3">
-        <h3>عنوان الكتاب الثالث</h3>
-      </article>
-    </section>
+  <!-- Modal لإضافة/تعديل الكتاب -->
+  <div class="modal" id="modal">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">إضافة كتاب جديد</h3>
 
-    <section class="reader" id="reader" aria-label="صفحة القراءة">
-      <div class="reader-controls" role="toolbar" aria-label="أدوات القارئ">
-        <button id="fontDecrease" title="تصغير الخط" aria-label="تصغير الخط">-</button>
-        <button id="fontReset" title="إعادة الحجم الافتراضي" aria-label="إعادة حجم الخط">حجم افتراضي</button>
-        <button id="fontIncrease" title="تكبير الخط" aria-label="تكبير الخط">+</button>
+      <div class="form-row">
+        <input id="title" type="text" placeholder="عنوان الكتاب" required>
+        <input id="author" type="text" placeholder="المؤلف" required>
       </div>
 
-      <div class="meta">المؤلف • تصنيف • 2025</div>
+      <div class="form-row">
+        <input id="category" type="text" placeholder="التصنيف (اختياري)">
+        <input id="coverUrl" type="url" placeholder="رابط غلاف (اختياري)">
+      </div>
 
-      <h2 style="margin-top:0">صفحة القراءة</h2>
+      <div class="form-row">
+        <input id="coverFile" type="file" accept="image/*">
+        <div style="min-width:120px">
+          <div style="font-size:13px;color:var(--muted);margin-bottom:6px">معاينة الغلاف</div>
+          <img id="coverPreview" src="https://via.placeholder.com/300x150?text=Cover" alt="معاينة الغلاف" style="width:120px;height:80px;object-fit:cover;border-radius:6px;border:1px solid rgba(0,0,0,0.06)">
+        </div>
+      </div>
 
-      <p>
-        هذا مثال لنص داخل صفحة القراءة. تم تصميم المسافات والخط لتكون مريحة للعين، مع إمكانية تغيير حجم الخط من الأزرار أعلاه.
-      </p>
+      <div class="form-row">
+        <textarea id="description" placeholder="وصف الكتاب أو نبذة"></textarea>
+      </div>
 
-      <p>
-        يمكنك إضافة ميزات إضافية لاحقاً مثل حفظ الملاحظات، تمييز النص، أو الانتقال بين الفصول. الكود هنا يركّز على تجربة قراءة نظيفة وسهلة التخصيص.
-      </p>
-    </section>
-  </main>
+      <div class="form-actions">
+        <button id="saveBook" class="btn">حفظ</button>
+        <button id="cancel" class="btn ghost">إلغاء</button>
+      </div>
+    </div>
+  </div>
 
-  <footer>
-    © 2025 منصتي للقراءة - جميع الحقوق محفوظة
-  </footer>
+  <footer>© 2025 منصتي للقراءة - جميع الحقوق محفوظة</footer>
 
   <script>
-    // عناصر
-    const body = document.body;
+    // عناصر DOM
+    const modal = document.getElementById('modal');
+    const openAdd = document.getElementById('openAdd');
+    const cancel = document.getElementById('cancel');
+    const saveBook = document.getElementById('saveBook');
+    const cardsContainer = document.getElementById('cardsContainer');
+    const coverFile = document.getElementById('coverFile');
+    const coverPreview = document.getElementById('coverPreview');
+    const coverUrl = document.getElementById('coverUrl');
+    const titleInput = document.getElementById('title');
+    const authorInput = document.getElementById('author');
+    const categoryInput = document.getElementById('category');
+    const descriptionInput = document.getElementById('description');
+    const searchInput = document.getElementById('searchInput');
+    const clearSearch = document.getElementById('clearSearch');
+    const countEl = document.getElementById('count');
     const themeToggle = document.getElementById('themeToggle');
-    const startReading = document.getElementById('startReading');
-    const reader = document.getElementById('reader');
-    const root = document.documentElement;
 
-    const btnInc = document.getElementById('fontIncrease');
-    const btnDec = document.getElementById('fontDecrease');
-    const btnReset = document.getElementById('fontReset');
+    // بيانات الكتب
+    let books = [];
+    let editIndex = null; // null => إضافة جديدة، رقم => تعديل
 
-    // إعدادات افتراضية
-    const DEFAULT_FONT = 18;
-    const MIN_FONT = 12;
-    const MAX_FONT = 28;
-    const STEP = 2;
+    // إعدادات
+    const STORAGE_KEY = 'my_books_v1';
 
-    // تحميل الإعدادات من localStorage
-    function loadSettings(){
-      const savedTheme = localStorage.getItem('theme');
-      if(savedTheme === 'dark') body.setAttribute('data-theme','dark');
-      else body.removeAttribute('data-theme');
-
-      const savedSize = parseInt(localStorage.getItem('readerFontSize'), 10);
-      if(savedSize && !isNaN(savedSize)){
-        root.style.setProperty('--reader-font-size', savedSize + 'px');
+    // تحميل الكتب من localStorage أو عينات افتراضية
+    function loadBooks(){
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        try { books = JSON.parse(raw) } catch(e){ books = [] }
       } else {
-        root.style.setProperty('--reader-font-size', DEFAULT_FONT + 'px');
+        // عينات افتراضية لتوضيح الشكل
+        books = [
+          {id:Date.now()+1, title:'عنوان الكتاب الأول', author:'مؤلف 1', category:'رواية', description:'نبذة قصيرة عن الكتاب الأول.', cover:'https://via.placeholder.com/400x250?text=Cover+1'},
+          {id:Date.now()+2, title:'عنوان الكتاب الثاني', author:'مؤلف 2', category:'مقال', description:'نبذة قصيرة عن الكتاب الثاني.', cover:'https://via.placeholder.com/400x250?text=Cover+2'}
+        ];
+        saveBooks();
       }
-
-      // زر الوضع
-      updateThemeButton();
     }
 
-    // تبديل الوضع الليلي
+    function saveBooks(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(books));
+    }
+
+    // عرض الكتب
+    function renderBooks(filter=''){
+      cardsContainer.innerHTML = '';
+      const q = filter.trim().toLowerCase();
+      const filtered = books.filter(b => {
+        if(!q) return true;
+        return (b.title||'').toLowerCase().includes(q) || (b.author||'').toLowerCase().includes(q) || (b.category||'').toLowerCase().includes(q);
+      });
+
+      countEl.textContent = filtered.length;
+
+      if(filtered.length === 0){
+        cardsContainer.innerHTML = '<p style="text-align:center;color:var(--muted);width:100%">لا توجد كتب لعرضها</p>';
+        return;
+      }
+
+      filtered.forEach((b, idx) => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          ${b.category ? `<div class="badge">${escapeHtml(b.category)}</div>` : ''}
+          <img src="${escapeHtml(b.cover || 'https://via.placeholder.com/400x250?text=No+Cover')}" alt="غلاف ${escapeHtml(b.title)}">
+          <div class="body">
+            <h3>${escapeHtml(b.title)}</h3>
+            <p>${escapeHtml(b.author)}</p>
+            <div class="actions">
+              <button class="icon-btn" data-action="edit" data-id="${b.id}">تعديل</button>
+              <button class="icon-btn" data-action="delete" data-id="${b.id}">حذف</button>
+            </div>
+          </div>
+        `;
+        cardsContainer.appendChild(card);
+      });
+    }
+
+    // فتح النافذة لإضافة كتاب جديد
+    function openModal(mode='add', book=null){
+      modal.classList.add('open');
+      if(mode === 'add'){
+        document.getElementById('modalTitle').textContent = 'إضافة كتاب جديد';
+        editIndex = null;
+        titleInput.value = '';
+        authorInput.value = '';
+        categoryInput.value = '';
+        descriptionInput.value = '';
+        coverUrl.value = '';
+        coverPreview.src = 'https://via.placeholder.com/300x150?text=Cover';
+        coverFile.value = '';
+      } else if(mode === 'edit' && book){
+        document.getElementById('modalTitle').textContent = 'تعديل بيانات الكتاب';
+        editIndex = books.findIndex(x => x.id === book.id);
+        titleInput.value = book.title || '';
+        authorInput.value = book.author || '';
+        categoryInput.value = book.category || '';
+        descriptionInput.value = book.description || '';
+        coverUrl.value = book.cover && book.cover.startsWith('data:') ? '' : (book.cover || '');
+        coverPreview.src = book.cover || 'https://via.placeholder.com/300x150?text=Cover';
+        coverFile.value = '';
+      }
+      titleInput.focus();
+    }
+
+    function closeModal(){
+      modal.classList.remove('open');
+    }
+
+    // حفظ/تحديث الكتاب
+    async function handleSave(){
+      const title = titleInput.value.trim();
+      const author = authorInput.value.trim();
+      const category = categoryInput.value.trim();
+      const description = descriptionInput.value.trim();
+      let cover = coverUrl.value.trim();
+
+      if(!title || !author){
+        alert('من فضلك اكتب العنوان والمؤلف');
+        return;
+      }
+
+      // إذا تم رفع ملف صورة، استخدمه
+      if(coverFile.files && coverFile.files[0]){
+        try {
+          cover = await fileToDataUrl(coverFile.files[0]);
+        } catch(e){
+          console.error(e);
+        }
+      }
+
+      if(editIndex === null){
+        // إضافة جديد
+        const newBook = {
+          id: Date.now(),
+          title, author, category, description, cover
+        };
+        books.unshift(newBook);
+      } else {
+        // تعديل
+        books[editIndex] = {
+          ...books[editIndex],
+          title, author, category, description, cover: cover || books[editIndex].cover
+        };
+      }
+
+      saveBooks();
+      renderBooks(searchInput.value);
+      closeModal();
+    }
+
+    // تحويل ملف إلى Data URL
+    function fileToDataUrl(file){
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // التعامل مع أزرار التعديل والحذف
+    cardsContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if(!btn) return;
+      const action = btn.getAttribute('data-action');
+      const id = Number(btn.getAttribute('data-id'));
+      if(action === 'edit'){
+        const book = books.find(b => b.id === id);
+        if(book) openModal('edit', book);
+      } else if(action === 'delete'){
+        if(confirm('هل تريد حذف هذا الكتاب؟')){
+          books = books.filter(b => b.id !== id);
+          saveBooks();
+          renderBooks(searchInput.value);
+        }
+      }
+    });
+
+    // معاينة الصورة عند إدخال رابط أو رفع ملف
+    coverUrl.addEventListener('input', () => {
+      const v = coverUrl.value.trim();
+      coverPreview.src = v || 'https://via.placeholder.com/300x150?text=Cover';
+    });
+
+    coverFile.addEventListener('change', async () => {
+      if(coverFile.files && coverFile.files[0]){
+        try {
+          const data = await fileToDataUrl(coverFile.files[0]);
+          coverPreview.src = data;
+        } catch(e){
+          console.error(e);
+        }
+      }
+    });
+
+    // أحداث الواجهة
+    openAdd.addEventListener('click', () => openModal('add'));
+    cancel.addEventListener('click', closeModal);
+    saveBook.addEventListener('click', handleSave);
+
+    // إغلاق المودال عند الضغط خارج البطاقة
+    modal.addEventListener('click', (e) => {
+      if(e.target === modal) closeModal();
+    });
+
+    // بحث
+    searchInput.addEventListener('input', () => renderBooks(searchInput.value));
+    clearSearch.addEventListener('click', () => { searchInput.value=''; renderBooks(''); });
+
+    // ثيم بسيط
+    function loadTheme(){
+      const t = localStorage.getItem('theme');
+      if(t === 'dark') document.body.setAttribute('data-theme','dark');
+      updateThemeBtn();
+    }
     function toggleTheme(){
-      const isDark = body.getAttribute('data-theme') === 'dark';
-      if(isDark){
-        body.removeAttribute('data-theme');
-        localStorage.setItem('theme','light');
-      } else {
-        body.setAttribute('data-theme','dark');
-        localStorage.setItem('theme','dark');
-      }
-      updateThemeButton();
+      const isDark = document.body.getAttribute('data-theme') === 'dark';
+      if(isDark){ document.body.removeAttribute('data-theme'); localStorage.setItem('theme','light'); }
+      else { document.body.setAttribute('data-theme','dark'); localStorage.setItem('theme','dark'); }
+      updateThemeBtn();
     }
-
-    function updateThemeButton(){
-      const isDark = body.getAttribute('data-theme') === 'dark';
-      themeToggle.textContent = isDark ? '☀️' : '🌙';
-      themeToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-    }
-
-    // التحكم في حجم الخط
-    function getCurrentFontSize(){
-      const val = getComputedStyle(root).getPropertyValue('--reader-font-size').trim();
-      return parseInt(val.replace('px',''), 10) || DEFAULT_FONT;
-    }
-
-    function setFontSize(size){
-      const clamped = Math.min(MAX_FONT, Math.max(MIN_FONT, size));
-      root.style.setProperty('--reader-font-size', clamped + 'px');
-      localStorage.setItem('readerFontSize', clamped);
-    }
-
-    btnInc.addEventListener('click', () => {
-      setFontSize(getCurrentFontSize() + STEP);
-    });
-
-    btnDec.addEventListener('click', () => {
-      setFontSize(getCurrentFontSize() - STEP);
-    });
-
-    btnReset.addEventListener('click', () => {
-      setFontSize(DEFAULT_FONT);
-    });
-
-    // زر تبديل الثيم
+    function updateThemeBtn(){ themeToggle.textContent = document.body.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙'; }
     themeToggle.addEventListener('click', toggleTheme);
 
-    // زر ابدأ القراءة
-    startReading.addEventListener('click', () => {
-      reader.scrollIntoView({behavior:'smooth', block:'start'});
-      // تركيز على العنصر لتحسين الوصول
-      setTimeout(()=> reader.focus({preventScroll:true}), 400);
-    });
+    // مساعدة: حماية من XSS بسيطة عند إدراج النصوص
+    function escapeHtml(str){
+      if(!str) return '';
+      return String(str).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
+    }
 
-    // تحميل الإعدادات عند بدء الصفحة
-    loadSettings();
+    // تهيئة
+    loadTheme();
+    loadBooks();
+    renderBooks();
 
-    // اختصارات لوحة مفاتيح مفيدة
-    document.addEventListener('keydown', (e) => {
-      if(e.key === '+' || (e.key === '=' && (e.ctrlKey || e.metaKey))) {
-        e.preventDefault();
-        setFontSize(getCurrentFontSize() + STEP);
-      } else if(e.key === '-' ) {
-        e.preventDefault();
-        setFontSize(getCurrentFontSize() - STEP);
-      } else if(e.key.toLowerCase() === 'd' && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        toggleTheme();
-      }
-    });
   </script>
 </body>
 </html>
